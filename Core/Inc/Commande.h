@@ -15,3 +15,4 @@ void affprompt(void);
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin);
 void Imp(void);
 void Speedchange(char []);
+void Alphachange(int);

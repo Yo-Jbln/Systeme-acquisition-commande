@@ -24,6 +24,8 @@
 #include "stdlib.h"
 
 const uint8_t prompt2[]="\r\n<user>@Nucleo-G431 >> ";
+int alpha;
+int CR = 1023;
 
 /**
  * \fn void commande(char cmd[])
@@ -36,7 +38,7 @@ void commande(char cmd[]){
 	else if (strcmp(cmd,"stop\r")==0) {Offmotor();}
 	else if (strcmp(cmd,"help\r")==0) {Comhelp();}
 	else if (strcmp(cmd,"pinout\r")==0) {Pinlist();}
-	//else if (strncmp(cmd,"speed = ",8)==0) {Speedchange(cmd);}
+	else if (strncmp(cmd,"speed = ",8)==0) {Speedchange(cmd);}
 	else {Badcom();}
 }
 
@@ -53,9 +55,7 @@ void affprompt(){
  * \brief Fonction qui allume le moteur via la commande "start" depuis le shell.
  */
 void Onmotor(){
-	double alpha = 0.5;
-	int CR = 1023;
-	int i;
+	alpha = 50;
 	const uint8_t power_on[] = "\r\nPower ON"; 					//contenant le message d'allumage du moteur
 	const uint8_t error_start[] = "\r\nLe demarrage a echouer"; //contenant le message d'erreur au démarrage
 	const uint8_t testm[] = "\r\nLe test commence"; 			//contenant le message prévenant du démarrage du test
@@ -72,54 +72,26 @@ void Onmotor(){
 
 
 	//Test
-	HAL_UART_Transmit(&huart2, testm, sizeof(testm), HAL_MAX_DELAY);
-	//TIM1->CCR1 = CR;
+	//HAL_UART_Transmit(&huart2, testm, sizeof(testm), HAL_MAX_DELAY);
 
 	//alpha = 50%
-	TIM1->CCR2 = alpha*CR;
-	HAL_UART_Transmit(&huart2, a50, sizeof(a50), HAL_MAX_DELAY);
-	HAL_Delay(1000);
+	TIM1->CCR2 = (double) (alpha*CR)/100;
+	//HAL_UART_Transmit(&huart2, a50, sizeof(a50), HAL_MAX_DELAY);
 
+	/*
 	//alpha = 70%
-	for(i =0;i<20;i++){
-		alpha = alpha + 0.01;
-		TIM1->CCR2 = alpha*CR;
-		HAL_Delay(1000);
-	}
-	//alpha = 0.7;
-	//TIM1->CCR2 = alpha*CR;
+	Alphachange(70);
 	HAL_UART_Transmit(&huart2, a70, sizeof(a70), HAL_MAX_DELAY);
-	HAL_Delay(1000);
 
 	//alpha = 100%
-	for(i =0;i<30;i++){
-			alpha = alpha + 0.01;
-			TIM1->CCR2 = alpha*CR;
-			HAL_Delay(1000);
-		}
-	//alpha = 1.0;
-	//TIM1->CCR2 = alpha*CR;
+	Alphachange(100);
 	HAL_UART_Transmit(&huart2, a100, sizeof(a100), HAL_MAX_DELAY);
-	HAL_Delay(1000);
 
 	//alpha = 0%
-	for(i =100;i=0;i--){
-		alpha = alpha - 0.01;
-			TIM1->CCR2 = alpha*CR;
-			HAL_Delay(1000);
-		}
-	//alpha = 0.0;
-	//TIM1->CCR2 = alpha*CR;
+	Alphachange(0);
 	HAL_UART_Transmit(&huart2, a0, sizeof(a0), HAL_MAX_DELAY);
-	HAL_Delay(1000);
 
-	for(i =0;i<50;i++){
-		alpha = alpha + 0.01;
-				TIM1->CCR2 = alpha*CR;
-				HAL_Delay(1000);
-			}
-
-	HAL_UART_Transmit(&huart2, testmt, sizeof(testmt), HAL_MAX_DELAY);
+	HAL_UART_Transmit(&huart2, testmt, sizeof(testmt), HAL_MAX_DELAY);*/
 	affprompt();
 
 }
@@ -137,6 +109,10 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 		affprompt();
 }
 
+/**
+ * \fn void Imp(void)
+ * \brief Fonction qui envoie une impulsion de 1 ms sur le pin 33.
+ */
 void Imp(){
 	HAL_GPIO_WritePin(Imp_GPIO_Port, Imp_Pin, GPIO_PIN_SET);
 	HAL_Delay(1);
@@ -150,6 +126,7 @@ void Imp(){
 void Offmotor(){
 	const uint8_t power_off[] = "\r\nPower OFF"; //contenant le message d'extinction du moteur
 
+	Alphachange(50);
 	HAL_UART_Transmit(&huart2, power_off, sizeof(power_off), HAL_MAX_DELAY);
 	affprompt();
 }
@@ -190,19 +167,23 @@ void Pinlist(){
  * \brief Fonction qui change la vitesse du moteur.
  */
 void Speedchange(char cmd[]){
-	const char sep[] = " ";
-	char *newspeed;
-	int i = 0;
-	int speed;
-	int maxspeed = 1500;
-	double alpha;
+	int alphavoulue;
 
-	for(i=0;i<3;i++){
-		newspeed = strtok(cmd,sep);
+	alphavoulue = atoi(&cmd[8]);
+	if(alphavoulue>100){alphavoulue = 100;}
+	Alphachange(alphavoulue);
+	affprompt();
+}
+
+/**
+ * \fn void Alphachange(double newalpha)
+ * \brief Fonction qui change la valeur de alpha.
+ */
+void Alphachange(int newalpha){
+	while(alpha!=newalpha){
+			if(newalpha>50){alpha++;}
+			else{alpha--;}
+			TIM1->CCR2 = (double) (alpha*CR)/100;
+			HAL_Delay(1000);
 	}
-	speed = atoi(newspeed);
-	if(speed>maxspeed){speed = maxspeed;}
-	alpha = (double)speed/maxspeed;
-	TIM1->CCR2 = alpha*1023;
-
 }
