@@ -3,12 +3,13 @@ Répertoire du TP de Système d'acquisition et de commande
 
 Dans un premier temps, il est question de la création d'une console dans laquelle on rentrera des commandes pour diriger le moteur.
 Commandes disponibles :
-``help : affiche toutes les commandes disponibles`` 
-``pinout : affiche toutes les broches connectees et leur fonction``
+``help : affiche toutes les commandes disponibles``
 
-``start : allume l'etage de puissance du moteur``
+``pinout : affiche toutes les broches connectées et leur fonction``
 
-``stop : eteint l'etage de puissance du moteur``
+``start : allume l'étage de puissance du moteur``
+
+``stop : éteint l'étage de puissance du moteur``
 
 ``speed = <alpha> : fait tourner le moteur à la vitesse voulue``
 
