@@ -18,3 +18,4 @@ Commandes disponibles :
 Lors de la commande ``start`` la carte envoie un implusion au hacheur pour lui
 
 ![tek00000](https://user-images.githubusercontent.com/86347317/141968295-56410056-098b-42b9-88f9-33dc8b2ca38a.png)
+![tek00001](https://user-images.githubusercontent.com/86347317/144016148-a4bf1a62-6fa8-4f73-b89f-2b8c97531224.png)
