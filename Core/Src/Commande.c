@@ -5,14 +5,14 @@
  *      Author: ericc
  */
 
-/*************************************************************
- * \file Commande.c											 *
- * \brief Programme où sont mise les fonctions de commande.	 *
- * \author Eric.CHASSERGUE									 *
- * \date 19 Octobre 2021									 *
- *															 *
- * Programme d'où les fonctions commande sont exécutées.	 *
- *************************************************************/
+/**
+ * \file Commande.c
+ * \brief Programme où sont mise les fonctions de commande.
+ * \author Eric.CHASSERGUE & Yohesan.J
+ * \date 19 Octobre 2021
+ *
+ * Programme d'où les fonctions commande sont exécutées.
+ */
 
 #include "main.h"
 #include "usart.h"
@@ -26,21 +26,21 @@ const uint8_t prompt2[]="\r\n<user>@Nucleo-G431 >> ";
 int alpha;
 int CR = 1023;
 
-/*******************************************
- * \fn void affprompt(void)				   *
- * \brief Fonction qui afficher le prompt. *
- *******************************************/
+/**
+ * \fn void affprompt(void)
+ * \brief Fonction qui afficher le prompt.
+ */
 void affprompt(){
 	HAL_UART_Transmit(&huart2, prompt2, sizeof(prompt2) , HAL_MAX_DELAY);
 }
 
 
-/*****************************************************************************
- * \fn void commande(char cmd[])											 *
- * \brief Fonction qui vérifie si la commande entrée est connue.			 *
- * 																			 *
- * \param char cmd[] pointeur du tableau où est contenue la commande entrée	 *
- *****************************************************************************/
+/**
+ * \fn void commande(char cmd[])
+ * \brief Fonction qui vérifie si la commande entrée est connue.
+ *
+ * \param char cmd[] pointeur du tableau où est contenue la commande entrée.
+ */
 void commande(char cmd[]){
 	if (strcmp(cmd,"start\r")==0) {Onmotor();}
 	else if (strcmp(cmd,"stop\r")==0) {Offmotor();}
@@ -51,10 +51,10 @@ void commande(char cmd[]){
 }
 
 
-/***************************************************************************
- * \fn void Imp(void)				   									   *
- * \brief Fonction qui envoie le signal permettant de demarrer le hacheur. *
- ***************************************************************************/
+/**
+ * \fn void Imp(void)				   									   
+ * \brief Fonction qui envoie le signal permettant de demarrer le hacheur. 
+ */
 void Imp(){
 	HAL_GPIO_WritePin(Imp_GPIO_Port, Imp_Pin, GPIO_PIN_SET);
 	HAL_Delay(1);
@@ -62,11 +62,10 @@ void Imp(){
 }
 
 
-/****************************************
- * \fn void Onmotor(void)				*
- * \brief Fonction qui allume le moteur	*
- * 		  via la commande "start". 		*
- ****************************************/
+/**
+ * \fn void Onmotor(void)
+ * \brief Fonction qui allume le moteur via la commande "start".
+ */
 void Onmotor(){
 	alpha = 50;
 	const uint8_t power_on[] = "\r\nPower ON"; 					//contenant le message d'allumage du moteur
@@ -110,13 +109,12 @@ void Onmotor(){
 
 }
 
-/********************************************************
- * \fn void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)	*
- * \brief Fonction qui allume le moteur 				*
- * 		  via un appuie sur le button utilisateur.		*
- * 														*
- * /!\ FONCTION NON TERMINEE							*
- ********************************************************/
+/**
+ * \fn void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+ * \brief Fonction qui allume le moteur via un appuie sur le button utilisateur.
+ *
+ * /!\ FONCTION NON TERMINEE
+ */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
 	const uint8_t power_on[] = "\r\nPower ON"; //message d'allumage du moteur
@@ -127,10 +125,10 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 }
 
 
-/**************************************************
- * \fn void Alphachange(double newalpha)		  *
- * \brief Fonction qui change la valeur de alpha. *
- **************************************************/
+/**
+ * \fn void Alphachange(double newalpha)		  
+ * \brief Fonction qui change la valeur de alpha. 
+ */
 void Alphachange(int newalpha){
 	while(alpha != newalpha){
 			if(newalpha > alpha){alpha++;}
@@ -141,11 +139,10 @@ void Alphachange(int newalpha){
 }
 
 
-/***************************************************
- * \fn void Speedchange(void)					   *
- * \brief Fonction qui change la vitesse du moteur *
- * 		  via la commande "speed = <alpha>"		   *
- ***************************************************/
+/**
+ * \fn void Speedchange(void)
+ * \brief Fonction qui change la vitesse du moteur ia la commande "speed = <alpha>"
+ */
 void Speedchange(char cmd[]){
 	int alphavoulue;
 
@@ -156,11 +153,10 @@ void Speedchange(char cmd[]){
 }
 
 
-/*****************************************
- * \fn void Offmotor(void)				 *
- * \brief Fonction qui éteind le moteur	 *
- * 		  via la commande "stop"		 *
- *****************************************/
+/**
+ * \fn void Offmotor(void)
+ * \brief Fonction qui éteind le moteur via la commande "stop"
+ */
 void Offmotor(){
 	const uint8_t power_off[] = "\r\nPower OFF"; //message d'extinction du moteur
 
@@ -170,10 +166,10 @@ void Offmotor(){
 }
 
 
-/*************************************************************
- * \fn void Badcom(void)								     *
- * \brief Gestion d'erreur pour les commandes non reconnues. *
- *************************************************************/
+/**
+ * \fn void Badcom(void)
+ * \brief Gestion d'erreur pour les commandes non reconnues.
+ */
 void Badcom(){
 	const uint8_t not_found[] = "\r\nCommand not found"; //message de commande non reconnue
 
@@ -182,11 +178,10 @@ void Badcom(){
 }
 
 
-/*********************************************************
- * \fn void Comhelp(void)								 *
- * \brief Fonction qui affiche les commandes utilisable. *
- * 		  via la commande "help"						 *
- *********************************************************/
+/**
+ * \fn void Comhelp(void)
+ * \brief Fonction qui affiche les commandes utilisable via la commande "help"
+ */
 void Comhelp(){
 	const uint8_t help[] = "\r\nCommandes disponible :\r\nhelp : affiche toutes les commandes disponibles\r\npinout : affiche toutes les broches connectees et leur fonction\r\nstart : allume l'etage de puissance du moteur\r\nstop : eteint l'etage de puissance du moteur\r\nspeed = <alpha> : fait tourner le moteur a la vitesse voulue";
 							
@@ -194,13 +189,12 @@ void Comhelp(){
 	affprompt();
 }
 
-/*********************************************************
- * \fn void Pinlist(void)								 *
- * \brief Fonction qui affiche la liste des pin branchés *
- * 		  et leurs fonctions via la commande "pinout"	 *
- * 														 *
- * /!\ A REMPLIRE										 *
- *********************************************************/
+/**
+ * \fn void Pinlist(void)
+ * \brief Fonction qui affiche la liste des pin branchés et leurs fonctions via la commande "pinout"
+ *
+ * /!\ A REMPLIRE
+ */
 void Pinlist(){
 	const uint8_t pinout[] = "\r\nliste des pin a remplir";
 	
