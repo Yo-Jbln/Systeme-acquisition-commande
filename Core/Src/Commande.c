@@ -133,7 +133,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
  **************************************************/
 void Alphachange(int newalpha){
 	while(alpha != newalpha){
-			if(newalpha > 50){alpha++;}
+			if(newalpha > alpha){alpha++;}
 			else{alpha--;}
 			TIM1->CCR2 = (double) (alpha*CR)/100;
 			HAL_Delay(1000);

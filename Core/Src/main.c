@@ -33,6 +33,8 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "adc.h"
+#include "dma.h"
 #include "tim.h"
 #include "usart.h"
 #include "gpio.h"
@@ -56,6 +58,9 @@
 #define UART_RX_BUFFER_SIZE 50
 #define UART_TX_BUFFER_SIZE 50
 #define CMD_BUFFER_SIZE 50
+#define ADC_BUFFER_SIZE 8
+
+#define __VREFANALOG_VOLTAGE__ 3300
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -66,21 +71,18 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-// Debug
-//char debug[] ="test";
-//HAL_UART_Transmit(&huart2, debug, sizeof(debug) , HAL_MAX_DELAY);
-
 /**
  * Déclarations des buffers.
  */
 char uart_rx_buffer[UART_RX_BUFFER_SIZE];
 char uart_tx_buffer[UART_TX_BUFFER_SIZE];
-
+uint16_t ADC_buffer[ADC_BUFFER_SIZE];
 /**
  * Déclarations des messages.
  */
 const uint8_t starting[] = "Bienvenue \r\n";
 const uint8_t prompt[]="<user>@Nucleo-G431 >> ";
+const uint8_t bonjour[]="\r\nBonjour\r\n";
 //const uint8_t prompt2[]="\r\n<user>@Nucleo-G431 >> ";
 
 /**
@@ -102,6 +104,7 @@ void SystemClock_Config(void);
  * Redéfinition du callback.
  */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *);
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc);
 
 /**
  * Prototypes de echo.
@@ -152,12 +155,32 @@ void stock(){
 			cmd[i]=0;
 		}
 		idxCmd = 0;
-
 	}
+	else if(cmd[idxCmd] == '\b'){
+	        idxCmd--;
+	    }
 	else {
 		idxCmd++;
 	}
 }
+
+/**
+  * @brief  Conversion complete callback in non-blocking mode.
+  * @param hadc ADC handle
+  * @retval None
+  */
+void HAL_ADC_ConvCpltCallback(ADC_HandleTypeDef *hadc)
+{
+	int j;
+  HAL_ADC_Stop_DMA(&hadc1);
+  for(j=0;j<ADC_BUFFER_SIZE;j++){
+  ADC_buffer[j] = __LL_ADC_CALC_DATA_TO_VOLTAGE( __VREFANALOG_VOLTAGE__,ADC_buffer[j],  LL_ADC_RESOLUTION_12B);
+  }
+}
+/*void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
+{
+	//HAL_UART_Transmit(&huart2, ADC_buffer, ADC_BUFFER_SIZE , HAL_MAX_DELAY);
+}*/
 
 /**
  * \fn int main (void)
@@ -194,13 +217,21 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART2_UART_Init();
+  MX_DMA_Init();
+  MX_ADC1_Init();
   MX_TIM1_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
   //Initialisation des PWM
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
   HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_1);
   HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_2);
   HAL_TIMEx_PWMN_Start(&htim1, TIM_CHANNEL_2);
+
+  //Initialisation pour l'ADC
+  HAL_ADCEx_Calibration_Start(&hadc1, ADC_SINGLE_ENDED);
+  HAL_ADC_Start_DMA(&hadc1, ADC_buffer, ADC_BUFFER_SIZE);
+  HAL_TIMEx_CommutCallback(&htim1);
 
   it_uart_rx_ready = 0;
   idxCmd = 0;
@@ -221,6 +252,7 @@ int main(void)
 	  HAL_Delay(1);*/
 
 	  HAL_UART_Receive_IT(&huart2, uart_rx_buffer, 1);
+	  //HAL_TIM_Base_Start_IT(&htim2);
 	  while(it_uart_rx_ready) {
 		  echo();
 		  stock();
@@ -277,8 +309,9 @@ void SystemClock_Config(void)
   }
   /** Initializes the peripherals clocks
   */
-  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART2;
+  PeriphClkInit.PeriphClockSelection = RCC_PERIPHCLK_USART2|RCC_PERIPHCLK_ADC12;
   PeriphClkInit.Usart2ClockSelection = RCC_USART2CLKSOURCE_PCLK1;
+  PeriphClkInit.Adc12ClockSelection = RCC_ADC12CLKSOURCE_SYSCLK;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInit) != HAL_OK)
   {
     Error_Handler();
