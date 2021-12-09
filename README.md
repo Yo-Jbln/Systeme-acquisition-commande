@@ -50,19 +50,23 @@ La solution pour palier à ce problème est de faire varier la rapport cyclique 
 Pour cela nous avons du faire des test pour récuperer les caractéristique du moteur car les valeurs indiquées sur la plaque n'étaient pas forcément correctes.
 
 Nous pouvons voir sur les images si dessous les valeurs récuperées à l'aide d'un ocsilloscope.
+
+Nous identifions la constante de temps éléctrique (Te) en luis imposant un échelon de tension.
 ![image](https://user-images.githubusercontent.com/86347317/144016148-a4bf1a62-6fa8-4f73-b89f-2b8c97531224.png)
+
+Ici nous mettons brutallement la courant à zéro pour pouvoir lire la valeur de la constante de temps mécanique (Tm).
 ![image](https://user-images.githubusercontent.com/86347317/144995396-7464b7b2-ab2b-4714-8bb3-85770913a6bf.png)
 
 Mesure moteur : 
 ```
-6.5 ohm (à froid) 
-Te = 18 ms(à peu près) (Vfinal = 930 mV à peu près)
+6.5 ohm (mesuré à l'Ohmmètre)
+Te = 18 ms (Vfinal = 930 mV à peu près)
 L = 117 mH
 test (U = 48 V, 1.77 A)
-Kphi = 0.404 V / rd s-1
-f (possible erreur) 7*10-5
+Kphi = 0.404 V / rd/s
+f = 7*10-5 (Valeur incohérente)
 gamma0 = 0,19 Nm
-Tmeca = 716 ms
+Tm = 716 ms
 ```
 
 Une fois les caractéristiques trouvées, nous devions récuperer le valeur du courant à l'aide des capteurs à effet Hall. Nous avions à récuperer les valeurs du capteur à l'aide de l'ADC qui écrit dans la mémoire en passant par le DMA (Direct Memory Access). Cette méthode permet de ne pas monopoliser le CPU du microcontroleur.
