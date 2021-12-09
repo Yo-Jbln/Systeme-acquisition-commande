@@ -59,12 +59,13 @@ Ici nous mettons brutallement la courant à zéro pour pouvoir lire la valeur de
 
 Mesure moteur : 
 ```
-6.5 ohm (mesuré à l'Ohmmètre)
+R = 6.5 Ω (mesuré à l'Ohmmètre)
 Te = 18 ms (Vfinal = 930 mV à peu près)
 L = 117 mH
+
 test (U = 48 V, 1.77 A)
 Kphi = 0.404 V / rd/s
-f = 7*10-5 (Valeur incohérente)
+f = 7*e-5 (Valeur incohérente, elle devrait de l'ordre de grandeur de e-4)
 gamma0 = 0,19 Nm
 Tm = 716 ms
 ```
