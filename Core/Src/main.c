@@ -20,16 +20,14 @@
 /**
  * \file main.c
  * \brief Programme principal.
- * \author Eric.CHASSERGUE
- * \date 21 october 2021
+ * \author Eric.CHASSERGUE & Yohesan J.
+ * \date 19 october 2021
  *
  * Programme d'ou les fonctions seront appelées.
  *
  */
 
-/**
- * Les includes.
- */
+
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
@@ -86,10 +84,6 @@ int it_uart_rx_ready = 0;
 char cmd[CMD_BUFFER_SIZE]; //contenant la commande en cours
 int idxCmd = 0; //contenant l'index du prochain caractère à remplir
 
-/**
- * Déclarations pour stocker la valeur du courant.
- */
-//float a;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
