@@ -15,7 +15,7 @@ speed = <alpha> : fait tourner le moteur à la vitesse voulue
 ```
 
 
-Lors de la commande ``start`` la carte envoie un implusion au hacheur pour l'allumer et le remettre à zéro.
+Lors de la commande ``start`` la carte envoie un implusion au hacheur pour l'allumer et le réinitialiser.
 
 * Nous avons en suite créé deux PWM, avec un rapport cyclique réglable, qui sont envoyées au hacheur pour que celui-ci commande notre moteur à courant continue.
 Vous pouvez retrouver ci-dessous la forme des PWM utilisées, suivant le cahier des charges imposant une fréquence de 16 kHz et un temps mort de 2 µs minimum.
@@ -47,7 +47,7 @@ La solution pour palier à ce problème est de faire varier la rapport cyclique 
 
 * Pour finir, nous devions asservir le moteur en courant puis en vitesse.
 
-Pour cela nous avons du faire des test pour récuperer les caractéristique du moteur car les valeurs théoriques n'étaient pas forcément correctes.
+Pour cela nous avons du faire des test pour récuperer les caractéristique du moteur car les valeurs indiquées sur la plaque n'étaient pas forcément correctes.
 
 Nous pouvons voir sur les images si dessous les valeurs récuperées à l'aide d'un ocsilloscope.
 ![image](https://user-images.githubusercontent.com/86347317/144016148-a4bf1a62-6fa8-4f73-b89f-2b8c97531224.png)
