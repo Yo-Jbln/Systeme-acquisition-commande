@@ -59,16 +59,16 @@ Ici nous mettons brutallement la courant à zéro pour pouvoir lire la valeur de
 
 Mesure moteur : 
 ```
-R = 6.5 Ω (mesuré à l'Ohmmètre)
-Te = 18 ms (Vfinal = 930 mV à peu près)
+R = 6.5 Ω (mesuré à l'Ohmmètre à froid)
+Te = 18 ms (Te = L/R)(Vfinal = 930 mV)
 L = 117 mH
-
-test (U = 48 V, 1.77 A)
-Kphi = 0.404 V / rd/s
+Kphi = 0.404 V / rd/s (avec U = 48 V, 1.77 A)
 f = 7*e-5 (Valeur incohérente, elle devrait de l'ordre de grandeur de e-4)
-gamma0 = 0,19 Nm
+gamma0 = 0,19 Nm (erreur de f répercuté ici)
 Tm = 716 ms
 ```
+Pour obtenir f, nous avons tracé la courbe Cm(Ω). L'erreur pourrait être du au petit nombre de tests fait pour tracer la courbe.
+
 
 Une fois les caractéristiques trouvées, nous devions récuperer le valeur du courant à l'aide des capteurs à effet Hall. Nous avions à récuperer les valeurs du capteur à l'aide de l'ADC qui écrit dans la mémoire en passant par le DMA (Direct Memory Access). Cette méthode permet de ne pas monopoliser le CPU du microcontroleur.
 
